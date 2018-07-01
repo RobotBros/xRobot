@@ -1,0 +1,15 @@
+menu "xRobot SPI Config"
+
+config SEND_BUFFER_SIZE
+    int "SPI Send buffer size"
+    default 2048
+    help
+        THe size of SPI send buffer in bytes.
+
+config RECV_BUFFER_SIZE
+    int "SPI Recv buffer size"
+    default 2048
+    help
+        THe size of SPI received buffer in bytes.
+
+endmenu
