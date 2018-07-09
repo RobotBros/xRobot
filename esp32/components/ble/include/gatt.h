@@ -28,6 +28,12 @@ extern "C"
 {
 #endif
 
+typedef void (* gatt_recv_cb_t)(uint8_t *data, size_t size);
+
+typedef struct {
+    gatt_recv_cb_t recvCallback;
+} BLEHandle;
+
 /**
  * @brief Send data to SPI device
  *
@@ -37,7 +43,7 @@ extern "C"
  *         - ESP_ERR_INVALID_ARG   if parameter is invalid
  *         - ESP_OK                on success
  */
-esp_err_t ble_gatt_init(void);
+esp_err_t ble_gatt_init(BLEHandle *handle);
 
 #ifdef __cplusplus
 }

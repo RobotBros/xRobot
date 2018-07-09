@@ -113,9 +113,9 @@ esp_err_t spi_init(SPIHandle *handle)
 
     // Initialize transaction structure
     memset(&tran, 0, sizeof(tran));
+    spi_handle = handle;
     tran.tx_buffer = spi_handle->sendBuffer;
     tran.rx_buffer = spi_handle->recvBuffer;
-    spi_handle = handle;
 
     //Initialize the SPI bus and add the device we want to send stuff to.
     ret = spi_bus_initialize(HSPI_HOST, &buscfg, 1);

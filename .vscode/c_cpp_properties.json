@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "~/source/c/esp32/esp-idf/components/esp32/include",
+                "~/source/c/esp32/esp-idf/components/nvs_flash/include",
+                "~/source/c/esp32/esp-idf/components/bt/include",
+                "~/source/c/esp32/esp-idf/components/bt/bluedroid/api/include/api",
+                "~/source/c/esp32/esp-idf/components/freertos/include",
+                "~/source/c/esp32/esp-idf/components/log/include",
+                "~/source/c/esp32/esp-idf/components/newlib/include",
+                "~/source/c/esp32/esp-idf/components/driver/include",
+                "~/source/c/esp32/esp-idf/components/heap/include",
+                "~/source/c/esp32/esp-idf/components/soc/include",
+                "~/source/c/esp32/esp-idf/components/soc/esp32/include",
+                "${workspaceFolder}/esp32",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

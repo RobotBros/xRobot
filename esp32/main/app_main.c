@@ -39,9 +39,30 @@
 
 #include "sdkconfig.h"
 
+#define MAIN_TAG "MAIN"
+
+// SPI
 static char spiSendBuffer[CONFIG_SEND_BUFFER_SIZE] = "";
 static char spiRecvBuffer[CONFIG_RECV_BUFFER_SIZE] = "";
 static SPIHandle spiHandle = {0};
+
+// BLE
+static void bleRecvCallback(uint8_t *data, size_t size);
+static BLEHandle bleHandle = {
+    .recvCallback = bleRecvCallback,
+};
+
+static void bleRecvCallback(uint8_t *data, size_t size)
+{
+    esp_err_t ret;
+    esp_log_buffer_hex(MAIN_TAG, data, size);
+    ret = spi_send((char *)data, size);
+    if (ret == ESP_OK) {
+
+    } else {
+        ESP_LOGE(MAIN_TAG, "Failed to write data to SPI. %d", ret);
+    }
+}
 
 void app_main()
 {
@@ -64,7 +85,7 @@ void app_main()
     ESP_ERROR_CHECK(ret);
 
     // Initialize BLE
-    ret = ble_gatt_init();
+    ret = ble_gatt_init(&bleHandle);
     ESP_ERROR_CHECK(ret);
 
     return;
