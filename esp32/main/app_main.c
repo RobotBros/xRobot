@@ -55,10 +55,9 @@ static BLEHandle bleHandle = {
 static void bleRecvCallback(uint8_t *data, size_t size)
 {
     esp_err_t ret;
-    esp_log_buffer_hex(MAIN_TAG, data, size);
     ret = spi_send((char *)data, size);
     if (ret == ESP_OK) {
-
+        ESP_LOGD(MAIN_TAG, "Data sent to SPI");
     } else {
         ESP_LOGE(MAIN_TAG, "Failed to write data to SPI. %d", ret);
     }
