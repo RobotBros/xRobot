@@ -426,6 +426,10 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
         if (add_descr_ret){
             ESP_LOGE(GATTS_TAG, "add char descr failed, error code =%x", add_descr_ret);
         }
+
+        // add characteristic
+        bleHandle->noti_attr_handle = param->add_char.attr_handle;
+
         break;
     }
     case ESP_GATTS_ADD_CHAR_DESCR_EVT:
@@ -456,11 +460,23 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
         gl_profile_tab[PROFILE_APP_ID].conn_id = param->connect.conn_id;
         //start sent the update connection parameters to the peer device.
         esp_ble_gap_update_conn_params(&conn_params);
+
+        // save the connection id
+        bleHandle->conn_idl = param->connect.conn_id;
+        bleHandle->gatts_if = gatts_if;
+        bleHandle->connected = true;
+
         break;
     }
     case ESP_GATTS_DISCONNECT_EVT:
         ESP_LOGI(GATTS_TAG, "ESP_GATTS_DISCONNECT_EVT");
         esp_ble_gap_start_advertising(&adv_params);
+
+        // clear connection
+        bleHandle->conn_idl = ESP_GATT_IF_NONE;
+        bleHandle->gatts_if = ESP_GATT_IF_NONE;
+        bleHandle->connected = false;
+
         break;
     case ESP_GATTS_CONF_EVT:
         ESP_LOGI(GATTS_TAG, "ESP_GATTS_CONF_EVT, status %d", param->conf.status);
@@ -511,6 +527,8 @@ esp_err_t ble_gatt_init(BLEHandle *handle)
 {
     esp_err_t ret;
 
+    bleHandle = handle;
+
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
@@ -556,7 +574,27 @@ esp_err_t ble_gatt_init(BLEHandle *handle)
         ESP_LOGE(GATTS_TAG, "set local  MTU failed, error code = %x", local_mtu_ret);
     }
 
-    bleHandle = handle;
+    return ret;
+}
+
+esp_err_t ble_send_notification(BLEHandle *handle, uint8_t *data, size_t size) {
+    esp_err_t ret;
+
+    if (!handle->connected) {
+        return ESP_FAIL;
+    }
+
+    ret = esp_ble_gatts_send_indicate(
+        handle->gatts_if,
+        handle->conn_idl,
+        handle->noti_attr_handle,
+        (uint16_t)size,
+        data,
+        false
+    );
+
+    ESP_LOGI(GATTS_TAG, "SEND NOTIFICATION, value len %d, ret: %d, value :", size, ret);
+    esp_log_buffer_hex(GATTS_TAG, data, size);
 
     return ret;
 }

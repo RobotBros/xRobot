@@ -28,23 +28,28 @@ extern "C"
 {
 #endif
 
+typedef void (*RecvCallback)(size_t size);
+
 typedef struct {
-    char *sendBuffer;
-    char *recvBuffer;
+    uint8_t *sendBuffer;
+    uint8_t *recvBuffer;
     size_t sendBufferSize;
     size_t recvBufferSize;
+    RecvCallback recvCallback;
 } SPIHandle;
 
 /**
  * @brief Send data to SPI device
  *
- * @param data  The data to be sent
- * @param size  THe size of the data
+ * @param data      The data to be sent
+ * @param size      The size in bytes of the data to be send
+ * @param rxlength  The size in bytes of the data to be received.
+ *                  If no data to be received, then set to `0`
  * @return
  *         - ESP_ERR_INVALID_ARG   if parameter is invalid
  *         - ESP_OK                on success
  */
-esp_err_t spi_send(char *data, size_t size);
+esp_err_t spi_send(uint8_t *data, size_t size, size_t rxlength);
 
 /**
  * @brief Initialize the SPI controller as master and 

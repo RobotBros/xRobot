@@ -3,7 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
+                "~/source/c/esp32/esp-idf/components/spi_flash/include",
+                "~/source/c/esp32/esp-idf/components/tcpip_adapter/include",
                 "~/source/c/esp32/esp-idf/components/esp32/include",
+                "~/source/c/esp32/esp-idf/components/lwip/include/lwip",
+                "~/source/c/esp32/esp-idf/components/lwip/include/lwip/port",
                 "~/source/c/esp32/esp-idf/components/nvs_flash/include",
                 "~/source/c/esp32/esp-idf/components/bt/include",
                 "~/source/c/esp32/esp-idf/components/bt/bluedroid/api/include/api",

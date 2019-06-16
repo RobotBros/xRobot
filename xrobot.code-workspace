@@ -4,5 +4,16 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"esp_event_loop.h": "c",
+			"esp_wifi.h": "c",
+			"btc_gatts.h": "c",
+			"btc_gatt_util.h": "c",
+			"esp_gatts_api.h": "c",
+			"esp_gatt_defs.h": "c",
+			"esp_bt_main.h": "c",
+			"btc_manage.h": "c"
+		}
+	}
 }

@@ -42,8 +42,8 @@
 #define MAIN_TAG "MAIN"
 
 // SPI
-static char spiSendBuffer[CONFIG_SEND_BUFFER_SIZE] = "";
-static char spiRecvBuffer[CONFIG_RECV_BUFFER_SIZE] = "";
+static uint8_t spiSendBuffer[CONFIG_SEND_BUFFER_SIZE] = {0};
+static uint8_t spiRecvBuffer[CONFIG_RECV_BUFFER_SIZE] = {0};
 static SPIHandle spiHandle = {0};
 
 // BLE
@@ -52,14 +52,29 @@ static BLEHandle bleHandle = {
     .recvCallback = bleRecvCallback,
 };
 
+/// Get the rx buffer size for given command
+static size_t getRxSizeForCommand(uint8_t *data, size_t size)
+{
+    // TODO
+    return 0;
+}
+
 static void bleRecvCallback(uint8_t *data, size_t size)
 {
     esp_err_t ret;
-    ret = spi_send((char *)data, size);
+    size_t rxlength = getRxSizeForCommand(data, size);
+    ret = spi_send(data, size, rxlength);
     if (ret == ESP_OK) {
-        ESP_LOGD(MAIN_TAG, "Data sent to SPI");
+        ESP_LOGD(MAIN_TAG, "Data sent to SPI, size: %d, rxlength: %d", size, rxlength);
     } else {
         ESP_LOGE(MAIN_TAG, "Failed to write data to SPI. %d", ret);
+    }
+}
+
+static void spiRecvCallback(size_t size) {
+    if (bleHandle.connected) {
+        // forward the spi data to bluetooth
+        ble_send_notification(&bleHandle, spiRecvBuffer, size);
     }
 }
 
@@ -80,6 +95,8 @@ void app_main()
     spiHandle.recvBuffer = spiRecvBuffer;
     spiHandle.sendBufferSize = CONFIG_SEND_BUFFER_SIZE;
     spiHandle.recvBufferSize = CONFIG_RECV_BUFFER_SIZE;
+    spiHandle.recvCallback = spiRecvCallback;
+
     ret = spi_init(&spiHandle);
     ESP_ERROR_CHECK(ret);
 

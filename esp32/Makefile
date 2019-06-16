@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := gatt
+PROJECT_NAME := xRobot
 
 COMPONENT_ADD_INCLUDEDIRS := components/include
 
